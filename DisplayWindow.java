@@ -113,7 +113,7 @@ public class DisplayWindow extends JFrame
 		
 		while((currentWallX > 0 && currentWallX < game.worldWidth * 64) && (currentWallY > 0 && currentWallY < game.worldHeight * 64))
 		{
-			if (game.world[currentWallY / 64][currentWallX / 64] == 1) {
+			if (game.world[currentWallY/ 64][currentWallX / 64] == 1) {
 				//graphics.drawLine((int)(game.xPos / 64d * 50), (int)(game.yPos / 64d * 50), (int)(currentWallX / 64d * 50), (int)(currentWallY / 64d * 50));
 				distance = (int)Math.sqrt(Math.pow(currentWallX - game.xPos, 2) + Math.pow(currentWallY - game.yPos, 2));
 				break;
@@ -170,7 +170,8 @@ public class DisplayWindow extends JFrame
 		int lineHeight = (int)(64d / distance * 200);
 		
 			if (distance < 1000) {
-				graphics.drawLine(i, (int)((canvas.getHeight() - lineHeight) / 2), i, (int)((canvas.getHeight() - lineHeight) / 2 + lineHeight));
+				graphics.fillRect(i, (int)((canvas.getHeight() - lineHeight) / 2), 1, lineHeight);
+				//graphics.drawLine(i, (int)((canvas.getHeight() - lineHeight) / 2), i, (int)((canvas.getHeight() - lineHeight) / 2 + lineHeight));
 			}
 		}
 		
