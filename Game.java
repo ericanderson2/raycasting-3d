@@ -22,9 +22,9 @@ public class Game
 	public int gridSize = 64;
 	public int xPos = 96;
 	public int yPos = 224;
-	public double dir = 0.0;
+	public double dir = 1.047198;
 	public double FOV = Math.PI / 2;
-	public double maximumSpeed = 0.002;
+	public double maximumSpeed = 0.005;
 	
 	public Game(int width, int height)
 	{
@@ -36,34 +36,44 @@ public class Game
 	{
 		timeSinceLastMove -= elapsedTime;
 		
-		if (input.isPressed(KeyEvent.VK_E)) {
+		if (input.isPressed(KeyEvent.VK_D)) {
 			dir += Math.PI * 0.5 * elapsedTime;
 		}
-		if (input.isPressed(KeyEvent.VK_Q)) {
+		if (input.isPressed(KeyEvent.VK_A)) {
 			dir -= Math.PI * 0.5 * elapsedTime;
+		}
+		
+		dir %= 2 * Math.PI;
+		if (dir < 0) {
+			dir += 2 * Math.PI;
 		}
 		
 		//movement with WASD
 		if (timeSinceLastMove <= 0) {
 			if (input.isPressed(KeyEvent.VK_W)) {
-				yPos -= 1;
+				
+				if (dir >= Math.PI / 4 && dir < 3 * Math.PI / 4) {
+					yPos += 1;
+				} else if (dir >= 3 * Math.PI / 4 && dir < 5 * Math.PI / 4) {
+					xPos -= 1;
+				} else if (dir >= 5 * Math.PI / 4 && dir < 7 * Math.PI / 4) {
+					yPos -= 1;
+				} else {
+					xPos += 1;
+				}
+				
 				timeSinceLastMove = maximumSpeed;
 			}
-			if (input.isPressed(KeyEvent.VK_S)) {
-				yPos += 1;
-				timeSinceLastMove = maximumSpeed;
-			}
-			if (input.isPressed(KeyEvent.VK_A)) {
-				xPos -= 1;
-				timeSinceLastMove = maximumSpeed;
-			}
-			if (input.isPressed(KeyEvent.VK_D)) {
-				xPos += 1;
-				timeSinceLastMove = maximumSpeed;
-			}
+			xPos = Math.min(xPos, worldWidth * gridSize - gridSize / 2);
+			xPos = Math.max(xPos, gridSize / 2);
+			
+			yPos = Math.min(yPos, worldHeight * gridSize - gridSize / 2);
+			yPos = Math.max(yPos, gridSize / 2);
 		}
+		
+		
 	}
-	
+
 	public void draw(double elapsedTime)
 	{
 		window.draw(this, elapsedTime);
