@@ -6,6 +6,24 @@ public class DisplayWindow extends JFrame
 {
 	private Canvas canvas;
 	
+	private Color[] palette = {Color.WHITE, Color.RED};
+	private int[][] brick = {{0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0},
+							 {1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0},
+							 {1, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 0},
+							 {1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0},
+							 {1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0},
+							 {0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0},
+							 {1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0},
+							 {1, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 0},
+							 {1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0},
+							 {1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0},
+							 {0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0},
+							 {1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0},
+							 {1, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 0},
+							 {1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0},
+							 {1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0}};
+	private int[][][] tiles = {null, brick};
+
 	public DisplayWindow(int width, int height, Input input)
 	{
 		setTitle("Raycasting 3D");
@@ -23,6 +41,7 @@ public class DisplayWindow extends JFrame
 		canvas.createBufferStrategy(2);
 		
 		setVisible(true);
+		
 	}
 	
 	public void draw(Game game, double elapsedTime)
@@ -52,10 +71,14 @@ public class DisplayWindow extends JFrame
 		
 		//graphics.drawLine((int)(game.xPos / 64d * 50), (int)(game.yPos / 64d * 50), (int)(game.xPos / 64d * 50 + Math.cos(angle) * 500), (int)(game.yPos / 64d * 50 + Math.sin(angle) * 500));
 		
+		
+		int offset = 0;
+		int tileID = 0;
+		
 		//calculate the horizontal wall ray collisions
 		boolean facingUp = (angle < 0 || angle > Math.PI);
 		boolean facingLeft = (angle > Math.PI / 2 && angle < 3 * Math.PI / 2);
-
+		
 		double currentWallY = (int)game.yPos;
 		if (facingUp) {
 			currentWallY -= 0.001;
@@ -85,6 +108,8 @@ public class DisplayWindow extends JFrame
 			if (game.world[(int)currentWallY][(int)currentWallX] != 0) {
 				//graphics.drawLine((int)(game.xPos / 64d * 50), (int)(game.yPos / 64d * 50), (int)(currentWallX / 64d * 50), (int)(currentWallY / 64d * 50));
 				distance = Math.sqrt(Math.pow(currentWallX - game.xPos, 2) + Math.pow(currentWallY - game.yPos, 2));
+				offset = (int)((currentWallX - (int)currentWallX) * 15);
+				tileID = game.world[(int)currentWallY][(int)currentWallX];
 				break;
 			}
 			currentWallX += deltaX;
@@ -120,6 +145,8 @@ public class DisplayWindow extends JFrame
 					//graphics.drawLine((int)(game.xPos / 64d * 50), (int)(game.yPos / 64d * 50), (int)(currentWallX2 / 64d * 50), (int)(currentWallY2 / 64d * 50));				
 					vertHit = true;
 					distance = Math.sqrt(Math.pow(currentWallX2 - game.xPos, 2) + Math.pow(currentWallY2 - game.yPos, 2));
+					offset = (int)((currentWallY2 - (int)currentWallY2) * 15);
+					tileID = game.world[(int)currentWallY2][(int)currentWallX2];
 					break;
 				}
 			}
@@ -136,13 +163,21 @@ public class DisplayWindow extends JFrame
 			graphics.setColor(Color.GRAY);
 		}
 		
-		
-		int lineHeight = (int)(1 / distance * distanceToProjection);
-		
-			if (distance < 1000) {
-				graphics.fillRect(i, (int)((canvas.getHeight() - lineHeight) / 2), 1, lineHeight);
-				//graphics.drawLine(i, (int)((canvas.getHeight() - lineHeight) / 2), i, (int)((canvas.getHeight() - lineHeight) / 2 + lineHeight));
+		if (distance < 1000) {
+			int lineHeight = (int)(1 / distance * distanceToProjection);
+			int[] slice = tiles[tileID][offset];
+			
+			for (int j = 0; j < 15; j++) {
+				Color color = palette[slice[j]];
+				if (vertHit) {
+					color = color.darker();
+				}
+				graphics.setColor(color);
+				graphics.fillRect(i, (int)((canvas.getHeight() - lineHeight) / 2 + j * (lineHeight / 15d)), 1, (int)(lineHeight / 15d + 1));
 			}
+			//graphics.fillRect(i, (int)((canvas.getHeight() - lineHeight) / 2), 1, lineHeight);
+		}
+		
 		}
 		
 		graphics.setColor(Color.WHITE);
