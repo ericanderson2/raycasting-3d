@@ -5,7 +5,8 @@ public class Game
 {
 	private DisplayWindow window;
 	private Input input;
-	private double timeSinceLastMove = 0;
+	private double speed = 5;
+	private double halfPlayerWidth = 0.25;
 	
 	public int[][] world = {{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
 							{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
@@ -19,11 +20,11 @@ public class Game
 	
 	public int worldWidth = 16;
 	public int worldHeight = 9;
+	
 	public double xPos = 10;
 	public double yPos = 3;
 	public double dir = 1.047198;
-	public double FOV = Math.PI / 2;
-	public double maximumSpeed = 0.02;
+	public double FOV = Math.PI / 3;
 	
 	public Game(int width, int height)
 	{
@@ -33,8 +34,6 @@ public class Game
 	
 	public void update(double elapsedTime)
 	{
-		timeSinceLastMove -= elapsedTime;
-		
 		if (input.isPressed(KeyEvent.VK_D)) {
 			dir += Math.PI * 0.5 * elapsedTime;
 		}
@@ -47,43 +46,34 @@ public class Game
 			dir += 2 * Math.PI;
 		}
 		
+		double oldX = xPos;
+		double oldY = yPos;
+		
 		//movement with WASD
-		if (timeSinceLastMove <= 0) {
-			if (input.isPressed(KeyEvent.VK_W)) {
-				
-				if (dir >= Math.PI / 4 && dir < 3 * Math.PI / 4) {
-					yPos += 0.1;
-				} else if (dir >= 3 * Math.PI / 4 && dir < 5 * Math.PI / 4) {
-					xPos -= 0.1;
-				} else if (dir >= 5 * Math.PI / 4 && dir < 7 * Math.PI / 4) {
-					yPos -= 0.1;
-				} else {
-					xPos += 0.1;
-				}
-				
-				timeSinceLastMove = maximumSpeed;
-			} else if (input.isPressed(KeyEvent.VK_S)) {
-				if (dir >= Math.PI / 4 && dir < 3 * Math.PI / 4) {
-					yPos -= 0.1;
-				} else if (dir >= 3 * Math.PI / 4 && dir < 5 * Math.PI / 4) {
-					xPos += 0.1;
-				} else if (dir >= 5 * Math.PI / 4 && dir < 7 * Math.PI / 4) {
-					yPos += 0.1;
-				} else {
-					xPos -= 0.1;
-				}
-				
-				timeSinceLastMove = maximumSpeed;
-			}
-			/*
-			xPos = Math.min(xPos, worldWidth - 0.5);
-			xPos = Math.max(xPos, 0.5);
-			
-			yPos = Math.min(yPos, worldHeight - 0.5);
-			yPos = Math.max(yPos, 0.5);*/
+		if (input.isPressed(KeyEvent.VK_W)) {
+			xPos += Math.cos(dir) * elapsedTime * speed;
+			yPos += Math.sin(dir) * elapsedTime * speed;
+		} else if (input.isPressed(KeyEvent.VK_S)) {
+			xPos -= Math.cos(dir) * elapsedTime * speed;
+			yPos -= Math.sin(dir) * elapsedTime * speed;
 		}
 		
+		//prevent the player from running into walls
+		if (world[(int)yPos][(int)(xPos + halfPlayerWidth)] != 0 ||
+			world[(int)yPos][(int)(xPos - halfPlayerWidth)] != 0) {
+				xPos = oldX;
+		}
+		if (world[(int)(yPos + halfPlayerWidth)][(int)xPos] != 0 ||
+			world[(int)(yPos - halfPlayerWidth)][(int)xPos] != 0) {
+				yPos = oldY;
+		}	
 		
+		//limit the player to the bounds of the world
+		xPos = Math.min(xPos, worldWidth - halfPlayerWidth);
+		xPos = Math.max(xPos, halfPlayerWidth);
+		
+		yPos = Math.min(yPos, worldHeight - halfPlayerWidth);
+		yPos = Math.max(yPos, halfPlayerWidth);
 	}
 
 	public void draw(double elapsedTime)

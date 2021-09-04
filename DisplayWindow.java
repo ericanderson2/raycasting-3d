@@ -38,8 +38,9 @@ public class DisplayWindow extends JFrame
 		graphics.setColor(Color.CYAN);
 		graphics.fillRect(0, 0, canvas.getWidth(), canvas.getHeight() / 2);
 		
-		//iterate through every vertical strip on the screen
+		double distanceToProjection = (canvas.getWidth() / 2) / Math.tan(game.FOV / 2);
 		
+		//iterate through every vertical strip on the screen	
 		for (int i = 0; i < 800; i++)
 		{
 		double angle = ((double)i / canvas.getWidth() * game.FOV + game.dir - game.FOV / 2);
@@ -81,7 +82,7 @@ public class DisplayWindow extends JFrame
 		
 		while((currentWallX > 0 && currentWallX < game.worldWidth) && (currentWallY > 0 && currentWallY < game.worldHeight))
 		{
-			if (game.world[(int)currentWallY][(int)currentWallX] == 1) {
+			if (game.world[(int)currentWallY][(int)currentWallX] != 0) {
 				//graphics.drawLine((int)(game.xPos / 64d * 50), (int)(game.yPos / 64d * 50), (int)(currentWallX / 64d * 50), (int)(currentWallY / 64d * 50));
 				distance = Math.sqrt(Math.pow(currentWallX - game.xPos, 2) + Math.pow(currentWallY - game.yPos, 2));
 				break;
@@ -113,7 +114,7 @@ public class DisplayWindow extends JFrame
 		
 		while((currentWallX2 > 0 && currentWallX2 < game.worldWidth) && (currentWallY2 > 0 && currentWallY2 < game.worldHeight))
 		{
-			if (game.world[(int)currentWallY2][(int)currentWallX2] == 1) {
+			if (game.world[(int)currentWallY2][(int)currentWallX2] != 0) {
 				double dist = Math.sqrt(Math.pow(currentWallX2 - game.xPos, 2) + Math.pow(currentWallY2 - game.yPos, 2));
 				if (dist < distance) {
 					//graphics.drawLine((int)(game.xPos / 64d * 50), (int)(game.yPos / 64d * 50), (int)(currentWallX2 / 64d * 50), (int)(currentWallY2 / 64d * 50));				
@@ -135,7 +136,8 @@ public class DisplayWindow extends JFrame
 			graphics.setColor(Color.GRAY);
 		}
 		
-		int lineHeight = (int)(1 / distance * 200);
+		
+		int lineHeight = (int)(1 / distance * distanceToProjection);
 		
 			if (distance < 1000) {
 				graphics.fillRect(i, (int)((canvas.getHeight() - lineHeight) / 2), 1, lineHeight);
