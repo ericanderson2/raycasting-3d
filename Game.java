@@ -5,25 +5,39 @@ public class Game
 {
 	private DisplayWindow window;
 	private Input input;
-	private double speed = 5;
+	
+	private double speed = 0;
+	private double acceleration = 30;
+	private double maxSpeed = 4;
+	private double friction = 8;
+	
+	private double angularSpeed = 0.65;
+	
 	private double halfPlayerWidth = 0.25;
 	
-	public int[][] world = {{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
-							{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-							{1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-							{1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1},
-							{1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 1},
-							{1, 0, 0, 0, 0, 0, 1, 0, 0, 1, 1, 1, 1, 1, 0, 1},
-							{1, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 1, 0, 1},
-							{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-							{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}};
+	public int[][] world = {{2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2},
+							{2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2},
+							{2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2},
+							{2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2},
+							{2, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 2},
+							{2, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 2},
+							{2, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 2},
+							{2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 2},
+							{2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2},
+							{2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2},
+							{2, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2},
+							{2, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2},
+							{2, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 2},
+							{2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2},
+							{2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2},
+							{2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2}};
 	
 	public int worldWidth = 16;
-	public int worldHeight = 9;
+	public int worldHeight = 16;
 	
-	public double xPos = 10;
-	public double yPos = 3;
-	public double dir = 1.047198;
+	public double xPos = 8;
+	public double yPos = 8;
+	public double dir = Math.PI;
 	public double FOV = Math.PI / 3;
 	
 	public Game(int width, int height)
@@ -35,10 +49,10 @@ public class Game
 	public void update(double elapsedTime)
 	{
 		if (input.isPressed(KeyEvent.VK_D)) {
-			dir += Math.PI * 0.5 * elapsedTime;
+			dir += Math.PI * angularSpeed * elapsedTime;
 		}
 		if (input.isPressed(KeyEvent.VK_A)) {
-			dir -= Math.PI * 0.5 * elapsedTime;
+			dir -= Math.PI * angularSpeed * elapsedTime;
 		}
 		
 		dir %= 2 * Math.PI;
@@ -51,11 +65,23 @@ public class Game
 		
 		//movement with WASD
 		if (input.isPressed(KeyEvent.VK_W)) {
-			xPos += Math.cos(dir) * elapsedTime * speed;
-			yPos += Math.sin(dir) * elapsedTime * speed;
+			speed += elapsedTime * acceleration;
 		} else if (input.isPressed(KeyEvent.VK_S)) {
-			xPos -= Math.cos(dir) * elapsedTime * speed;
-			yPos -= Math.sin(dir) * elapsedTime * speed;
+			speed -= elapsedTime * acceleration;
+		}
+		
+		speed = Math.max(speed, -maxSpeed);
+		speed = Math.min(speed, maxSpeed);
+		
+		xPos += Math.cos(dir) * speed * elapsedTime;
+		yPos += Math.sin(dir) * speed * elapsedTime;
+		
+		if (speed > 0) {
+			speed -= friction * elapsedTime;
+			speed = Math.max(0, speed);
+		} else {
+			speed += friction * elapsedTime;
+			speed = Math.min(0, speed);
 		}
 		
 		//prevent the player from running into walls

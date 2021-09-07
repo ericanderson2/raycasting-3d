@@ -6,23 +6,39 @@ public class DisplayWindow extends JFrame
 {
 	private Canvas canvas;
 	
-	private Color[] palette = {Color.WHITE, Color.RED};
-	private int[][] brick = {{0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0},
-							 {1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0},
-							 {1, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 0},
-							 {1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0},
-							 {1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0},
-							 {0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0},
-							 {1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0},
-							 {1, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 0},
-							 {1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0},
-							 {1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0},
-							 {0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0},
-							 {1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0},
-							 {1, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 0},
-							 {1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0},
-							 {1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0}};
-	private int[][][] tiles = {null, brick};
+	private Color[] palette = {null, Color.RED, Color.WHITE, new Color(150, 75, 0)};
+	private int[][] brick = {{2, 2, 2, 1, 1, 2, 2, 2, 2, 1, 1, 2, 2, 2, 2},
+							 {1, 1, 2, 1, 1, 2, 1, 1, 2, 1, 1, 2, 1, 1, 2},
+							 {1, 1, 2, 2, 2, 2, 1, 1, 2, 2, 2, 2, 1, 1, 2},
+							 {1, 1, 2, 1, 1, 2, 1, 1, 2, 1, 1, 2, 1, 1, 2},
+							 {1, 1, 2, 1, 1, 2, 1, 1, 2, 1, 1, 2, 1, 1, 2},
+							 {2, 2, 2, 1, 1, 2, 2, 2, 2, 1, 1, 2, 2, 2, 2},
+							 {1, 1, 2, 1, 1, 2, 1, 1, 2, 1, 1, 2, 1, 1, 2},
+							 {1, 1, 2, 2, 2, 2, 1, 1, 2, 2, 2, 2, 1, 1, 2},
+							 {1, 1, 2, 1, 1, 2, 1, 1, 2, 1, 1, 2, 1, 1, 2},
+							 {1, 1, 2, 1, 1, 2, 1, 1, 2, 1, 1, 2, 1, 1, 2},
+							 {2, 2, 2, 1, 1, 2, 2, 2, 2, 1, 1, 2, 2, 2, 2},
+							 {1, 1, 2, 1, 1, 2, 1, 1, 2, 1, 1, 2, 1, 1, 2},
+							 {1, 1, 2, 2, 2, 2, 1, 1, 2, 2, 2, 2, 1, 1, 2},
+							 {1, 1, 2, 1, 1, 2, 1, 1, 2, 1, 1, 2, 1, 1, 2},
+							 {1, 1, 2, 1, 1, 2, 1, 1, 2, 1, 1, 2, 1, 1, 2}};
+
+	private int[][] fence = {{3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3},
+							 {3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3},
+							 {0, 0, 0, 0, 3, 3, 0, 0, 0, 0, 3, 3, 0, 0, 0},
+							 {3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3},
+							 {3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3},
+							 {0, 0, 0, 0, 3, 3, 0, 0, 0, 0, 3, 3, 0, 0, 0},
+							 {3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3},
+							 {3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3},
+							 {0, 0, 0, 0, 3, 3, 0, 0, 0, 0, 3, 3, 0, 0, 0},
+							 {3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3},
+							 {3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3},
+							 {0, 0, 0, 0, 3, 3, 0, 0, 0, 0, 3, 3, 0, 0, 0},
+							 {3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3},
+							 {3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3},
+							 {0, 0, 0, 0, 3, 3, 0, 0, 0, 0, 3, 3, 0, 0, 0}};
+	private int[][][] tiles = {null, brick, fence};
 
 	public DisplayWindow(int width, int height, Input input)
 	{
@@ -169,22 +185,18 @@ public class DisplayWindow extends JFrame
 			
 			for (int j = 0; j < 15; j++) {
 				Color color = palette[slice[j]];
-				if (vertHit) {
-					color = color.darker();
+				if (color != null) {
+					if (vertHit) {
+						color = color.darker();
+					}
+					graphics.setColor(color);
+					graphics.fillRect(i, (int)((canvas.getHeight() - lineHeight) / 2 + j * (lineHeight / 15d)), 1, (int)(lineHeight / 15d + 1));
 				}
-				graphics.setColor(color);
-				graphics.fillRect(i, (int)((canvas.getHeight() - lineHeight) / 2 + j * (lineHeight / 15d)), 1, (int)(lineHeight / 15d + 1));
 			}
 			//graphics.fillRect(i, (int)((canvas.getHeight() - lineHeight) / 2), 1, lineHeight);
 		}
 		
 		}
-		
-		graphics.setColor(Color.WHITE);
-		int fps = (int)(1 / elapsedTime);
-		graphics.drawString("FPS: " + fps, 5, 15);
-		graphics.drawString("X Pos: " + game.xPos, 5, 30);
-		graphics.drawString("Y Pos: " + game.yPos, 5, 45);
 		
 		for (int x = 0; x < game.worldWidth; x++)
 		{
@@ -213,6 +225,10 @@ public class DisplayWindow extends JFrame
 		graphics.fillOval((int)(game.xPos * 10 - 5), (int)(game.yPos * 10 - 5), 10, 10);
 		graphics.drawLine((int)(game.xPos * 10), (int)(game.yPos * 10), (int)(game.xPos * 10 + Math.cos(game.dir - game.FOV / 2) * 50), (int)(game.yPos * 10 + Math.sin(game.dir - game.FOV / 2) * 50));
 		graphics.drawLine((int)(game.xPos * 10), (int)(game.yPos * 10), (int)(game.xPos * 10 + Math.cos(game.dir + game.FOV / 2) * 50), (int)(game.yPos * 10 + Math.sin(game.dir + game.FOV / 2) * 50));
+		
+		graphics.setColor(Color.WHITE);
+		int fps = (int)(1 / elapsedTime);
+		graphics.drawString("FPS: " + fps, 740, 15);
 		
 		graphics.dispose();
 		bufferStrat.show();
