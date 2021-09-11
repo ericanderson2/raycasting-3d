@@ -15,6 +15,8 @@ Move the character with W and S and look around with A and D. There is simple ac
 
 The world is grid-based and can be changed to be any size with any number of walls. Walls are a set height and can be given a 15x15 texture. Any number of different textures and colors are supported.
 
+Code is written to be easily modified for a different window size, FOV, player width, etc. 
+
 ## Original Goals
 * Player controls character movement and direction facing
 * Walls render at correct height and shading depending on the location of the player
