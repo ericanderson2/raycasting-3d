@@ -4,11 +4,11 @@ This is an attempt to create a pseudo-3D renderer using raycasting. Written in J
 
 Here's what the project looks like running! (Mild motion-sickness warning, the second video is smoother)
 
-https://user-images.githubusercontent.com/28969597/132963532-6ba95912-6f8c-4218-ac50-2faf504113ba.mp4
+https://user-images.githubusercontent.com/28969597/133003841-397e833e-be47-4cec-a9e4-68270dc2d781.mp4
 
 More of a doom style/enclosed feel, just changing the colors:
 
-https://user-images.githubusercontent.com/28969597/132964471-6ade5907-b382-4ce9-916e-a4451706e29e.mp4
+https://user-images.githubusercontent.com/28969597/133003846-d583117b-9ba0-497a-a1c7-1fe44ca4154e.mp4
 
 ## Features
 Move the character with W and S and look around with A and D. There is simple acceleration and friction to make the controls feel better (only for movement, not for looking around). The player collides with walls and the edge of the world.
