@@ -39,8 +39,7 @@ public class Game {
                           {2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2},
                           {2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2},
                           {2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2}};
-  public int ifCase = 0;
-  public int insideCase = 0;
+  private int ifCase = 0;
 
   /**
    * Constructor for game.
@@ -95,8 +94,6 @@ public class Game {
     }
 
     //prevent the player from running into walls
-	//bug: the player get 'stuck' on corners. this code is the culprit.
-    //ifCase = 0;
     if (world[(int)yPos][(int)(xPos + HALF_PLAYER_WIDTH)] != 0 ||
         world[(int)yPos][(int)(xPos - HALF_PLAYER_WIDTH)] != 0) {
 	  xPos = oldX;
@@ -107,51 +104,31 @@ public class Game {
 	  yPos = oldY;
 	  ifCase = 2;
     }
-	/*if (world[(int)(yPos + HALF_PLAYER_WIDTH)][(int)(xPos + HALF_PLAYER_WIDTH)] != 0 ||
-        world[(int)(yPos - HALF_PLAYER_WIDTH)][(int)(xPos - HALF_PLAYER_WIDTH)] != 0) {
-      xPos = oldX;
-	  yPos = oldY;
-	  ifCase = 3;
-    }*/
-    if (world[(int)(yPos + HALF_PLAYER_WIDTH)][(int)(xPos + HALF_PLAYER_WIDTH)] != 0) {
-    	if (1 == ifCase) {
-          xPos = Math.min(xPos, oldX);
-          insideCase = 1;}
-    	else if (2 == ifCase) {
-    	  yPos = Math.min(yPos,  oldY);
-    	  insideCase = 2;}
-    	  //ifCase = 4;
+
+    //prevent the player from getting stuck on corners. not a perfect fix, but should no longer get stuck on corners
+    if (world[(int)(yPos + HALF_PLAYER_WIDTH)][(int)(xPos + HALF_PLAYER_WIDTH)] != 0) {//northwest corner
+    	if (1 == ifCase)
+          xPos = Math.min(xPos, Math.round(xPos) - HALF_PLAYER_WIDTH);//these forcibly correct the players position if it is detected to be in a wall
+    	else if (2 == ifCase)
+    	  yPos = Math.min(yPos,  Math.round(yPos) - HALF_PLAYER_WIDTH);//these
         }
-    else if (world[(int)(yPos - HALF_PLAYER_WIDTH)][(int)(xPos - HALF_PLAYER_WIDTH)] != 0) {
-          //xPos = Math.max(xPos, oldX);
-    	  //yPos = Math.max(yPos,  oldY);
-    	if (1 == ifCase) {
-    	  xPos = Math.max(Math.round(xPos) + HALF_PLAYER_WIDTH, xPos);
-    	  //xPos = (int)(xPos - HALF_PLAYER_WIDTH) + HALF_PLAYER_WIDTH;
-    	  insideCase = 1;}
-    	if (2 == ifCase) {
-  	      yPos = Math.max(Math.round(yPos) + HALF_PLAYER_WIDTH,  yPos);
-  	      //yPos = (int)(yPos - HALF_PLAYER_WIDTH) + HALF_PLAYER_WIDTH;
-  	      insideCase = 2;}
-    	  //ifCase = 5;
+    else if (world[(int)(yPos - HALF_PLAYER_WIDTH)][(int)(xPos - HALF_PLAYER_WIDTH)] != 0) {//southeast corner
+    	if (1 == ifCase)
+    	  xPos = Math.max(xPos, Math.round(xPos) + HALF_PLAYER_WIDTH);//these
+    	if (2 == ifCase)
+  	      yPos = Math.max(yPos, Math.round(yPos) + HALF_PLAYER_WIDTH);//these
         }
-    else if (world[(int)(yPos + HALF_PLAYER_WIDTH)][(int)(xPos - HALF_PLAYER_WIDTH)] != 0) {
-    	if (1 == ifCase) {
-          xPos = Math.max(xPos, oldX);
-          insideCase = 1;}
-    	else if (2 == ifCase) {
-    	  yPos = Math.min(yPos,  oldY);
-    	  insideCase = 2;}
-    	  //ifCase = 6;
+    else if (world[(int)(yPos + HALF_PLAYER_WIDTH)][(int)(xPos - HALF_PLAYER_WIDTH)] != 0) {//northeast corner
+    	if (1 == ifCase)
+          xPos = Math.max(xPos, Math.round(xPos) + HALF_PLAYER_WIDTH);//these
+    	else if (2 == ifCase)
+    	  yPos = Math.min(yPos,  Math.round(yPos) - HALF_PLAYER_WIDTH);//these
         }
-    else if (world[(int)(yPos - HALF_PLAYER_WIDTH)][(int)(xPos + HALF_PLAYER_WIDTH)] != 0) {
-    	if (1 == ifCase) {
-          xPos = Math.min(xPos, oldX);
-          insideCase = 1;}
-    	else if (2 == ifCase) {
-    	  yPos = Math.max(yPos,  oldY);
-    	  insideCase = 2;}
-    	  //ifCase = 7;
+    else if (world[(int)(yPos - HALF_PLAYER_WIDTH)][(int)(xPos + HALF_PLAYER_WIDTH)] != 0) {//southwest corner
+    	if (1 == ifCase)
+          xPos = Math.min(xPos, Math.round(xPos) - HALF_PLAYER_WIDTH);//these
+    	else if (2 == ifCase)
+    	  yPos = Math.max(yPos,  Math.round(yPos) + HALF_PLAYER_WIDTH);//these
         }
 
     //limit the player to the bounds of the world
